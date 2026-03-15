@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Field Trip Club Kenya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">🌍 Field Trip Club Kenya</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="trips.html">Trips</a></li>
+                <li><a href="register.html" class="active">Register</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Join Field Trip Club Kenya</h1>
+            <p>Choose your account type and sign up</p>
+        </div>
+    </section>
+
+    <section class="auth-section">
+        <div class="container">
+            <!-- User Type Selection -->
+            <div id="userTypeSelection" class="auth-container">
+                <h2>Select Account Type</h2>
+                <div class="user-type-options">
+                    <div class="type-card" onclick="selectUserType('excursor')">
+                        <div class="type-icon">👤</div>
+                        <h3>Excursor</h3>
+                        <p>Regular user</p>
+                        <ul>
+                            <li>✓ Join field trips</li>
+                            <li>✓ Connect with other travelers</li>
+                            <li>✓ No registration fee</li>
+                        </ul>
+                        <button class="btn btn-primary">Choose Excursor</button>
+                    </div>
+
+                    <div class="type-card" onclick="selectUserType('event_holder')">
+                        <div class="type-icon">📋</div>
+                        <h3>Event Holder</h3>
+                        <p>Trip organizer</p>
+                        <ul>
+                            <li>✓ Create & manage trips</li>
+                            <li>✓ Edit trip costs</li>
+                            <li>✓ KYC verification</li>
+                            <li>✓ 999 KES registration fee</li>
+                        </ul>
+                        <button class="btn btn-secondary">Become Event Holder</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Excursor Registration Form -->
+            <div id="excursorForm" class="auth-container" style="display: none;">
+                <h2>Create Excursor Account</h2>
+                <form id="excursorSignupForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="excursor-name">Full Name *</label>
+                        <input type="text" id="excursor-name" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excursor-email">Email Address *</label>
+                        <input type="email" id="excursor-email" required placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excursor-phone">Phone Number</label>
+                        <input type="tel" id="excursor-phone" placeholder="Enter your phone number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excursor-password">Password *</label>
+                        <input type="password" id="excursor-password" required placeholder="Min. 8 characters">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="excursor-confirm">Confirm Password *</label>
+                        <input type="password" id="excursor-confirm" required placeholder="Confirm your password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up as Excursor</button>
+                    <button type="button" class="btn btn-ghost btn-block" onclick="backToTypeSelection()">Back</button>
+                </form>
+            </div>
+
+            <!-- Event Holder Registration Form -->
+            <div id="eventHolderForm" class="auth-container" style="display: none;">
+                <h2>Create Event Holder Account</h2>
+                <form id="eventHolderSignupForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="eh-name">Full Name *</label>
+                        <input type="text" id="eh-name" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eh-email">Email Address *</label>
+                        <input type="email" id="eh-email" required placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eh-phone">Phone Number (for MPesa) *</label>
+                        <input type="tel" id="eh-phone" required placeholder="E.g., +254712345678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eh-password">Password *</label>
+                        <input type="password" id="eh-password" required placeholder="Min. 8 characters">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eh-confirm">Confirm Password *</label>
+                        <input type="password" id="eh-confirm" required placeholder="Confirm your password">
+                    </div>
+
+                    <div class="info-box">
+                        <h4>🔒 What Happens Next:</h4>
+                        <ol>
+                            <li>Email verification via OTP</li>
+                            <li>KYC verification with government ID</li>
+                            <li>Pay KES 999 via MPesa</li>
+                            <li>Access Event Holder Dashboard</li>
+                        </ol>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary btn-block">Continue to Registration</button>
+                    <button type="button" class="btn btn-ghost btn-block" onclick="backToTypeSelection()">Back</button>
+                </form>
+            </div>
+
+            <!-- OTP Verification -->
+            <div id="otpSection" class="auth-container" style="display: none;">
+                <h2>Verify Your Email</h2>
+                <p id="otpEmail" style="text-align: center; color: #666; margin-bottom: 1.5rem;"></p>
+                <form id="otpForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="otp-input">Enter OTP (6 digits) *</label>
+                        <input 
+                            type="text" 
+                            id="otp-input" 
+                            maxlength="6" 
+                            placeholder="000000" 
+                            required 
+                            class="otp-input"
+                        >
+                    </div>
+                    <p style="text-align: center; font-size: 0.9rem; color: #666;">OTP valid for 10 minutes</p>
+                    <button type="submit" class="btn btn-primary btn-block">Verify Email</button>
+                </form>
+            </div>
+
+            <!-- KYC Verification -->
+            <div id="kycSection" class="auth-container" style="display: none;">
+                <h2>KYC Verification (Required for Event Holders)</h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">Complete identity verification to proceed</p>
+                
+                <div id="kycSuccessMessage" style="display: none; background: #d4edda; border: 1px solid #28a745; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;"></div>
+                <div id="kycErrorMessage" style="display: none; background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;"></div>
+
+                <form id="kycForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="kyc-type">ID Type *</label>
+                        <select id="kyc-type" required>
+                            <option value="">Select ID Type</option>
+                            <option value="national_id">National ID</option>
+                            <option value="passport">Passport</option>
+                            <option value="driving_license">Driving License</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kyc-id">ID Number *</label>
+                        <input type="text" id="kyc-id" required placeholder="Enter your ID number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kyc-firstname">First Name *</label>
+                        <input type="text" id="kyc-firstname" required placeholder="First name from ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kyc-lastname">Last Name *</label>
+                        <input type="text" id="kyc-lastname" required placeholder="Last name from ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kyc-dob">Date of Birth *</label>
+                        <input type="date" id="kyc-dob" required>
+                    </div>
+
+                    <div class="info-box">
+                        <p>🔒 Your information is encrypted and will be verified with government databases. You must be at least 18 years old.</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Start KYC Verification</button>
+                </form>
+            </div>
+
+            <!-- MPesa Payment -->
+            <div id="paymentSection" class="auth-container" style="display: none;">
+                <h2>Complete Payment</h2>
+                <div class="payment-box">
+                    <h3>Registration Fee</h3>
+                    <div class="payment-amount">KES 999</div>
+                    <p style="color: #666; margin-bottom: 1.5rem;">One-time fee to become an Event Holder</p>
+
+                    <form id="mpesaForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="mpesa-phone">Phone Number (for MPesa) *</label>
+                            <input 
+                                type="tel" 
+                                id="mpesa-phone" 
+                                required 
+                                placeholder="+254712345678"
+                            >
+                        </div>
+
+                        <div class="info-box">
+                            <h4>📱 How to Pay:</h4>
+                            <ol>
+                                <li>You'll receive an MPesa prompt on your phone</li>
+                                <li>Enter your MPesa PIN to confirm payment</li>
+                                <li>You'll get a confirmation message</li>
+                                <li>Your Event Holder account will be activated</li>
+                            </ol>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Initiate MPesa Payment
+                        </button>
+                    </form>
+
+                    <!-- Payment Status -->
+                    <div id="paymentStatus" style="display: none; margin-top: 2rem;">
+                        <div class="success-box" id="paymentSuccess" style="display: none;">
+                            <h3>✓ Payment Successful!</h3>
+                            <p>Your Event Holder account has been activated.</p>
+                            <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+                        </div>
+                        <div class="error-box" id="paymentError" style="display: none;">
+                            <h3>✗ Payment Failed</h3>
+                            <p id="paymentErrorMsg"></p>
+                            <button type="button" class="btn btn-secondary" onclick="retryPayment()">Retry Payment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successSection" class="auth-container" style="display: none;">
+                <div class="success-message">
+                    <h2>✓ Registration Complete!</h2>
+                    <p id="successMessage"></p>
+                    <a href="login.html" class="btn btn-primary">Go to Login</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Field Trip Club Kenya. All rights reserved.</p>
+            <p>Contact us: info@fieldtripclub.ke | Phone: +254-123-456-789</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

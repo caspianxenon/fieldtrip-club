@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Field Trip Club Kenya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">🌍 Field Trip Club Kenya</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="trips.html">Trips</a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 id="dashboardTitle">Dashboard</h1>
+            <p id="dashboardSubtitle">Welcome back!</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="container">
+            <!-- User Info -->
+            <div class="dashboard-card">
+                <h2>👤 Profile Information</h2>
+                <div class="user-info">
+                    <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
+                    <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+                    <p><strong>Account Type:</strong> <span id="userType">Loading...</span></p>
+                    <p><strong>Status:</strong> <span id="userStatus">Loading...</span></p>
+                </div>
+            </div>
+
+            <!-- Excursor Dashboard -->
+            <div id="excursorDashboard" style="display: none;">
+                <!-- Rewards Section -->
+                <div class="dashboard-card">
+                    <h2>🏆 Your Rewards & Achievements</h2>
+                    <div class="rewards-summary">
+                        <div class="reward-item">
+                            <span class="reward-number" id="userPoints">0</span>
+                            <span class="reward-label">Points</span>
+                        </div>
+                        <div class="reward-item">
+                            <span class="reward-number" id="userBadges">0</span>
+                            <span class="reward-label">Badges</span>
+                        </div>
+                        <div class="reward-item">
+                            <span class="reward-number" id="userReferrals">0</span>
+                            <span class="reward-label">Referrals</span>
+                        </div>
+                        <div class="reward-item">
+                            <span class="reward-number" id="userGroups">0</span>
+                            <span class="reward-label">Groups</span>
+                        </div>
+                    </div>
+                    <button onclick="getUserRewards()" class="btn btn-secondary">View Full Rewards</button>
+                    <button onclick="showLeaderboard()" class="btn btn-secondary" style="margin-left: 10px;">🏅 Leaderboard</button>
+                </div>
+
+                <!-- Group Booking -->
+                <div class="dashboard-card">
+                    <h2>👥 Group Booking System</h2>
+                    <p>Create groups for trips and invite friends with share codes!</p>
+                    <div style="display: flex; gap: 10px; margin: 1rem 0;">
+                        <button onclick="createGroupTrip()" class="btn btn-primary">➕ Create Group</button>
+                        <button onclick="joinGroupTrip()" class="btn btn-secondary">👥 Join Group</button>
+                    </div>
+                    <div id="myGroupsContainer" style="margin-top: 1rem;">
+                        <p style="color: #666;">No groups yet. Create or join a group to start!</p>
+                    </div>
+                </div>
+
+                <!-- Referral System -->
+                <div class="referral-card">
+                    <h2>🎯 Earn Points with Referrals!</h2>
+                    <p>Invite friends and earn rewards when they join</p>
+                    <button onclick="generateReferralLink()" class="btn" style="background: white; color: #f5576c; font-weight: bold; margin-top: 1rem;">Generate Referral Link</button>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.9;">
+                        Share your link → Friends Join → You Earn Points 🚀
+                    </p>
+                </div>
+
+                <!-- My Tickets -->
+                <div class="dashboard-card">
+                    <h2>🎫 My Tickets</h2>
+                    <div id="myTicketsContainer">
+                        <p style="color: #666;">No tickets yet. Book a trip to get one!</p>
+                    </div>
+                    <button onclick="showMyTickets()" class="btn btn-secondary">View All Tickets</button>
+                </div>
+
+                <!-- Trips Section -->
+                <div class="dashboard-card">
+                    <h2>🎫 My Trips</h2>
+                    <div id="myTripsContainer">
+                        <p style="color: #666;">You haven't joined any trips yet.</p>
+                    </div>
+                    <a href="trips.html" class="btn btn-primary">Explore Trips</a>
+                </div>
+            </div>
+
+            <!-- Event Holder Dashboard -->
+            <div id="eventHolderDashboard" style="display: none;">
+                <!-- Status Cards -->
+                <div class="status-cards">
+                    <div class="status-card">
+                        <h3>KYC Status</h3>
+                        <p id="kycStatusDisplay" class="status-badge">Pending</p>
+                    </div>
+                    <div class="status-card">
+                        <h3>Payment Status</h3>
+                        <p id="paymentStatusDisplay" class="status-badge">Pending</p>
+                    </div>
+                    <div class="status-card">
+                        <h3>Trips Created</h3>
+                        <p id="tripsCreatedCount" style="font-size: 2rem; color: #2ecc71;">0</p>
+                    </div>
+                    <div class="status-card">
+                        <h3>Referral Points</h3>
+                        <p id="ehUserPoints" style="font-size: 2rem; color: #3498db;">0</p>
+                    </div>
+                </div>
+
+                <!-- Referral System for Event Holders -->
+                <div class="referral-card">
+                    <h2>🎯 Grow Your Network</h2>
+                    <p>Generate referral links to attract more event holders and participants</p>
+                    <button onclick="generateReferralLink()" class="btn" style="background: white; color: #f5576c; font-weight: bold; margin-top: 1rem;">Generate Referral Link</button>
+                    <div class="referral-stats">
+                        <div class="referral-stat">
+                            <div class="referral-stat-number" id="ehReferrals">0</div>
+                            <div class="referral-stat-label">Referrals</div>
+                        </div>
+                        <div class="referral-stat">
+                            <div class="referral-stat-number" id="ehGroupsCreated">0</div>
+                            <div class="referral-stat-label">Groups</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Trip Form -->
+                <div class="dashboard-card">
+                    <h2>➕ Create New Trip</h2>
+                    <form id="createTripForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="trip-name">Trip Name *</label>
+                            <input type="text" id="trip-name" required placeholder="E.g., Maasai Mara Safari">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="trip-date">Date *</label>
+                                <input type="date" id="trip-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trip-location">Location *</label>
+                                <input type="text" id="trip-location" required placeholder="E.g., Maasai Mara">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trip-description">Description *</label>
+                            <textarea id="trip-description" required placeholder="Trip details" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="trip-cost">Cost (KES) *</label>
+                                <input type="number" id="trip-cost" required min="1000" placeholder="5000">
+                            </div>
+                            <div class="form-group">
+                                <label for="trip-capacity">Capacity *</label>
+                                <input type="number" id="trip-capacity" required min="1" placeholder="20">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Create Trip</button>
+                    </form>
+                </div>
+
+                <!-- My Trips -->
+                <div class="dashboard-card">
+                    <h2>📋 My Trips</h2>
+                    <div id="createdTripsContainer">
+                        <p style="color: #666;">You haven't created any trips yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Field Trip Club Kenya. All rights reserved.</p>
+            <p>Contact us: info@fieldtripclub.ke | Phone: +254-123-456-789</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+        
+        // Handle create trip form
+        document.getElementById('createTripForm')?.addEventListener('submit', createTrip);
+    </script>
+</body>
+</html>
