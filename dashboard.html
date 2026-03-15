@@ -216,18 +216,31 @@
     </footer>
 
     <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
     <!-- App Scripts -->
     <script src="app.js"></script>
     <script src="script.js"></script>
 
     <script>
-        // Load dashboard on page load
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        // Ensure user is authenticated before loading dashboard
+        async function checkAuth() {
+            const user = await requireAuth('login.html');
+            if (user) {
+                console.log('✓ Dashboard access granted for:', user.email);
+                // Load dashboard on page load
+                document.addEventListener('DOMContentLoaded', loadDashboard);
 
-        // Handle create trip form
-        document.getElementById('createTripForm')?.addEventListener('submit', createTrip);
+                // Handle create trip form
+                const createTripForm = document.getElementById('createTripForm');
+                if (createTripForm) {
+                    createTripForm.addEventListener('submit', createTrip);
+                }
+            }
+        }
+
+        // Check auth immediately
+        checkAuth();
     </script>
 </body>
 </html>

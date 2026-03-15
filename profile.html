@@ -70,7 +70,7 @@
     </footer>
 
     <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
     <!-- App Scripts -->
     <script src="app.js"></script>
@@ -79,6 +79,160 @@
     <script>
         // Load profile page with extended info
         async function loadProfilePageFull() {
+            await updateNavigation();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('id');
+            const user = await getCurrentUser();
+
+            if (!userId) {
+                // Load own profile
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const profile = await getUserProfile(user.id);
+                const createdTrips = await getUserCreatedTrips(user.id);
+                const joinedTrips = await getUserJoinedTrips(user.id);
+
+                const profileContainer = document.getElementById('profileContainer');
+                if (profileContainer) {
+                    profileContainer.innerHTML = `
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <h2>${profile?.full_name || user.email}</h2>
+                                <p class="profile-email">${user.email}</p>
+                                ${profile?.bio ? `<p class="profile-bio">${profile.bio}</p>` : ''}
+                            </div>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span class="stat-number">${createdTrips.length}</span>
+                                    <span class="stat-label">Trips Created</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">${joinedTrips.length}</span>
+                                    <span class="stat-label">Trips Joined</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 2rem;">
+                                <a href="dashboard.html" class="btn btn-primary">Edit Profile</a>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Load created trips
+                const createdTripsContainer = document.getElementById('userCreatedTrips');
+                if (createdTripsContainer) {
+                    if (createdTrips.length === 0) {
+                        createdTripsContainer.innerHTML = '<p>This user hasn\'t created any trips yet.</p>';
+                    } else {
+                        createdTripsContainer.innerHTML = createdTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+
+                // Load joined trips
+                const joinedTripsContainer = document.getElementById('userJoinedTrips');
+                if (joinedTripsContainer) {
+                    if (joinedTrips.length === 0) {
+                        joinedTripsContainer.innerHTML = '<p>This user hasn\'t joined any trips yet.</p>';
+                    } else {
+                        joinedTripsContainer.innerHTML = joinedTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+            } else {
+                // Load other user's profile
+                const profile = await getUserProfile(userId);
+                if (!profile) {
+                    document.getElementById('profileContainer').innerHTML = '<p>User not found.</p>';
+                    return;
+                }
+
+                const createdTrips = await getUserCreatedTrips(userId);
+                const joinedTrips = await getUserJoinedTrips(userId);
+
+                const profileContainer = document.getElementById('profileContainer');
+                if (profileContainer) {
+                    profileContainer.innerHTML = `
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <h2>${profile?.full_name || 'User'}</h2>
+                                ${profile?.bio ? `<p class="profile-bio">${profile.bio}</p>` : ''}
+                            </div>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span class="stat-number">${createdTrips.length}</span>
+                                    <span class="stat-label">Trips Created</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">${joinedTrips.length}</span>
+                                    <span class="stat-label">Trips Joined</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Load created trips
+                const createdTripsContainer = document.getElementById('userCreatedTrips');
+                if (createdTripsContainer) {
+                    if (createdTrips.length === 0) {
+                        createdTripsContainer.innerHTML = '<p>This user hasn\'t created any trips yet.</p>';
+                    } else {
+                        createdTripsContainer.innerHTML = createdTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+
+                // Load joined trips
+                const joinedTripsContainer = document.getElementById('userJoinedTrips');
+                if (joinedTripsContainer) {
+                    if (joinedTrips.length === 0) {
+                        joinedTripsContainer.innerHTML = '<p>This user hasn\'t joined any trips yet.</p>';
+                    } else {
+                        joinedTripsContainer.innerHTML = joinedTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+            }
+        }
+
+        // Load profile on page load
+        document.addEventListener('DOMContentLoaded', loadProfilePageFull);
+    </script>
+</body>
+</html>
             await updateNavigation();
 
             const urlParams = new URLSearchParams(window.location.search);
