@@ -206,11 +206,17 @@
         </div>
     </footer>
 
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <!-- App Scripts -->
+    <script src="app.js"></script>
     <script src="script.js"></script>
+
     <script>
         // Load dashboard on page load
         document.addEventListener('DOMContentLoaded', loadDashboard);
-        
+
         // Handle create trip form
         document.getElementById('createTripForm')?.addEventListener('submit', createTrip);
     </script>

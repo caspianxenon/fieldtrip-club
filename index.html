@@ -108,6 +108,43 @@
         </div>
     </footer>
 
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <!-- App Scripts -->
+    <script src="app.js"></script>
     <script src="script.js"></script>
+
+    <script>
+        // Load trips on home page
+        async function loadHomeTrips() {
+            const trips = await getAllTrips(4); // Show 4 featured trips
+            const tripsGrid = document.querySelector('.trips-grid');
+
+            if (tripsGrid && trips.length > 0) {
+                const user = await getCurrentUser();
+
+                tripsGrid.innerHTML = await Promise.all(trips.map(async (trip) => {
+                    const memberCount = await getTripMemberCount(trip.id);
+                    const userJoined = user ? await hasUserJoinedTrip(trip.id, user.id) : false;
+
+                    return `
+                        <div class="trip-card">
+                            <div class="trip-icon">📍</div>
+                            <h3>${trip.title}</h3>
+                            <p><strong>Date:</strong> ${formatDate(trip.date)}</p>
+                            <p><strong>Location:</strong> ${trip.location}</p>
+                            <p>${trip.description}</p>
+                            <p class="cost"><strong>${memberCount} / ${trip.capacity} spots filled</strong></p>
+                            <a href="trip.html?id=${trip.id}" class="btn btn-secondary">View Details</a>
+                        </div>
+                    `;
+                })).then(results => results.join(''));
+            }
+        }
+
+        // Load trips when page loads
+        document.addEventListener('DOMContentLoaded', loadHomeTrips);
+    </script>
 </body>
 </html>

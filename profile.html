@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Field Trip Club Kenya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">🌍 Field Trip Club Kenya</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="trips.html">Trips</a></li>
+                <li><a href="dashboard.html" id="dashboardLink" style="display: none;">Dashboard</a></li>
+                <li><a href="register.html" id="registerLink">Register</a></li>
+                <li><a href="login.html" id="loginLink">Login</a></li>
+                <li><a href="#" id="logoutLink" onclick="logout()" style="display: none;">Logout</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>User Profile</h1>
+            <p>View user information and activity</p>
+        </div>
+    </section>
+
+    <section class="profile-section">
+        <div class="container">
+            <div id="profileContainer">
+                <!-- Profile content will be loaded here -->
+            </div>
+
+            <!-- User's Created Trips -->
+            <div class="profile-card">
+                <h2>🗺️ Trips Created by This User</h2>
+                <div id="userCreatedTrips">
+                    <p>Loading...</p>
+                </div>
+            </div>
+
+            <!-- User's Joined Trips -->
+            <div class="profile-card">
+                <h2>🎫 Trips This User Has Joined</h2>
+                <div id="userJoinedTrips">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Field Trip Club Kenya. All rights reserved.</p>
+            <p>Contact us: info@fieldtripclub.ke | Phone: +254-123-456-789</p>
+        </div>
+    </footer>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <!-- App Scripts -->
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Load profile page with extended info
+        async function loadProfilePageFull() {
+            await updateNavigation();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('id');
+            const user = await getCurrentUser();
+
+            if (!userId) {
+                // Load own profile
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const profile = await getUserProfile(user.id);
+                const createdTrips = await getUserCreatedTrips(user.id);
+                const joinedTrips = await getUserJoinedTrips(user.id);
+
+                const profileContainer = document.getElementById('profileContainer');
+                if (profileContainer) {
+                    profileContainer.innerHTML = `
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <h2>${profile?.full_name || user.email}</h2>
+                                <p class="profile-email">${user.email}</p>
+                                ${profile?.bio ? `<p class="profile-bio">${profile.bio}</p>` : ''}
+                            </div>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span class="stat-number">${createdTrips.length}</span>
+                                    <span class="stat-label">Trips Created</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">${joinedTrips.length}</span>
+                                    <span class="stat-label">Trips Joined</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 2rem;">
+                                <a href="dashboard.html" class="btn btn-primary">Edit Profile</a>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Load created trips
+                const createdTripsContainer = document.getElementById('userCreatedTrips');
+                if (createdTripsContainer) {
+                    if (createdTrips.length === 0) {
+                        createdTripsContainer.innerHTML = '<p>This user hasn\'t created any trips yet.</p>';
+                    } else {
+                        createdTripsContainer.innerHTML = createdTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+
+                // Load joined trips
+                const joinedTripsContainer = document.getElementById('userJoinedTrips');
+                if (joinedTripsContainer) {
+                    if (joinedTrips.length === 0) {
+                        joinedTripsContainer.innerHTML = '<p>This user hasn\'t joined any trips yet.</p>';
+                    } else {
+                        joinedTripsContainer.innerHTML = joinedTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+            } else {
+                // Load other user's profile
+                const profile = await getUserProfile(userId);
+                if (!profile) {
+                    document.getElementById('profileContainer').innerHTML = '<p>User not found.</p>';
+                    return;
+                }
+
+                const createdTrips = await getUserCreatedTrips(userId);
+                const joinedTrips = await getUserJoinedTrips(userId);
+
+                const profileContainer = document.getElementById('profileContainer');
+                if (profileContainer) {
+                    profileContainer.innerHTML = `
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <h2>${profile?.full_name || 'User'}</h2>
+                                ${profile?.bio ? `<p class="profile-bio">${profile.bio}</p>` : ''}
+                            </div>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span class="stat-number">${createdTrips.length}</span>
+                                    <span class="stat-label">Trips Created</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">${joinedTrips.length}</span>
+                                    <span class="stat-label">Trips Joined</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Load created trips
+                const createdTripsContainer = document.getElementById('userCreatedTrips');
+                if (createdTripsContainer) {
+                    if (createdTrips.length === 0) {
+                        createdTripsContainer.innerHTML = '<p>This user hasn\'t created any trips yet.</p>';
+                    } else {
+                        createdTripsContainer.innerHTML = createdTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+
+                // Load joined trips
+                const joinedTripsContainer = document.getElementById('userJoinedTrips');
+                if (joinedTripsContainer) {
+                    if (joinedTrips.length === 0) {
+                        joinedTripsContainer.innerHTML = '<p>This user hasn\'t joined any trips yet.</p>';
+                    } else {
+                        joinedTripsContainer.innerHTML = joinedTrips.map(trip => `
+                            <a href="trip.html?id=${trip.id}" class="trip-link">
+                                <div class="trip-card-small">
+                                    <h4>${trip.title}</h4>
+                                    <p>📍 ${trip.location}</p>
+                                    <p>📅 ${formatDate(trip.date)}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                    }
+                }
+            }
+        }
+
+        // Load profile on page load
+        document.addEventListener('DOMContentLoaded', loadProfilePageFull);
+    </script>
+</body>
+</html>

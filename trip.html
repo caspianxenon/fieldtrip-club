@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Details - Field Trip Club Kenya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">🌍 Field Trip Club Kenya</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="trips.html">Trips</a></li>
+                <li><a href="dashboard.html" id="dashboardLink" style="display: none;">Dashboard</a></li>
+                <li><a href="register.html" id="registerLink">Register</a></li>
+                <li><a href="login.html" id="loginLink">Login</a></li>
+                <li><a href="#" id="logoutLink" onclick="logout()" style="display: none;">Logout</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 id="tripTitle">Trip Details</h1>
+            <p><a href="trips.html">← Back to Trips</a></p>
+        </div>
+    </section>
+
+    <section class="trip-details-section">
+        <div class="container">
+            <!-- Trip Details -->
+            <div id="tripDetails" class="trip-details-container">
+                <!-- Trip details will be loaded here -->
+            </div>
+
+            <!-- Trip Members -->
+            <div class="trip-info-card">
+                <h3>👥 Trip Members</h3>
+                <div id="tripMembers">
+                    <!-- Members will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Trip Comments -->
+            <div class="trip-info-card">
+                <h3>💬 Trip Comments</h3>
+                <div id="tripComments">
+                    <!-- Comments will be loaded here -->
+                </div>
+
+                <!-- Comment Form -->
+                <form id="commentForm" style="margin-top: 2rem; display: none;">
+                    <div class="form-group">
+                        <label for="commentText">Add Your Comment *</label>
+                        <textarea
+                            id="commentText"
+                            required
+                            placeholder="Share your thoughts about this trip..."
+                            rows="4"
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+            </div>
+
+            <!-- Share Trip -->
+            <div class="trip-info-card">
+                <h3>🔗 Share This Trip</h3>
+                <p>Share this trip with your friends!</p>
+                <div class="share-buttons">
+                    <button class="btn btn-secondary" onclick="shareTrip()">Copy Link</button>
+                    <button class="btn btn-secondary" onclick="shareViaWhatsApp()">WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Field Trip Club Kenya. All rights reserved.</p>
+            <p>Contact us: info@fieldtripclub.ke | Phone: +254-123-456-789</p>
+        </div>
+    </footer>
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <!-- App Scripts -->
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Show comment form only if user is logged in
+        async function initializeCommentForm() {
+            const user = await getCurrentUser();
+            const commentForm = document.getElementById('commentForm');
+            if (user && commentForm) {
+                commentForm.style.display = 'block';
+            }
+        }
+
+        // Share trip functionality
+        function shareTrip() {
+            const tripId = new URLSearchParams(window.location.search).get('id');
+            const url = `${window.location.origin}/trip.html?id=${tripId}`;
+            navigator.clipboard.writeText(url);
+            alert('Trip link copied to clipboard!');
+        }
+
+        function shareViaWhatsApp() {
+            const tripId = new URLSearchParams(window.location.search).get('id');
+            const url = `${window.location.origin}/trip.html?id=${tripId}`;
+            const text = `Check out this Field Trip Club trip: ${url}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Load trip details
+        document.addEventListener('DOMContentLoaded', async () => {
+            await updateNavigation();
+            await loadTripDetailsPage();
+            await initializeCommentForm();
+        });
+    </script>
+</body>
+</html>
