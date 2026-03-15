@@ -1,27 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Register | FieldTrip Club</title>
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2ecc71">
+    <title>Register - Field Trip Club Kenya</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <h1>FieldTrip Club - Register</h1>
+<body class="register-page">
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">🌍 Field Trip Club Kenya</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="trips.html">Trips</a></li>
+                <li><a href="register.html" class="active">Register</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <form id="register-form">
-    <input id="email" type="email" placeholder="Email" required>
-    <input id="password" type="password" placeholder="Password" required>
-    <button type="submit">Register</button>
-  </form>
+    <section class="page-header">
+        <div class="container">
+            <h1>Create Your Account</h1>
+            <p>Join Field Trip Club Kenya and start your adventures</p>
+        </div>
+    </section>
 
-  <p>Already have an account? <a href="login.html">Login</a></p>
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-container" style="max-width: 500px;">
+                <h2>Register</h2>
 
-  <!-- JS: Load Supabase first, then your app.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-  <script src="app.js"></script>
+                <form id="register-form" class="auth-form">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="register-email">Email Address *</label>
+                        <input
+                            type="email"
+                            id="register-email"
+                            placeholder="your@email.com"
+                            required
+                        >
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="register-password">Password *</label>
+                        <input
+                            type="password"
+                            id="register-password"
+                            placeholder="At least 6 characters"
+                            required
+                        >
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password *</label>
+                        <input
+                            type="password"
+                            id="register-confirm-password"
+                            placeholder="Confirm your password"
+                            required
+                        >
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Create Account
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <p style="margin-top: 2rem; text-align: center;">
+                    Already have an account?
+                    <a href="login.html" style="color: #2ecc71; text-decoration: none; font-weight: bold;">
+                        Login here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Field Trip Club Kenya. All rights reserved.</p>
+            <p>Contact: info@fieldtripclub.ke | Phone: +254-123-456-789</p>
+        </div>
+    </footer>
+
+    <!-- ⚠️ IMPORTANT: Load Supabase BEFORE app.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+
+    <!-- Application scripts -->
+    <script src="app.js"></script>
 </body>
 </html>
